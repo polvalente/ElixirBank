@@ -1,11 +1,21 @@
-We want to have a EventSourced application that has this API
+# Bank
 
-defmodule Bank do
-  @type id :: String.t
-  @spec add_funds(id, integer) :: :ok | {:error, any()}
-  @spec balance(id) :: integer
-  @spec transfer(id, id, integer) :: :ok | {:error, any()}
-  @spec statement(id) :: [integer]
+**TODO: Add description**
+
+## Installation
+
+If [available in Hex](https://hex.pm/docs/publish), the package can be installed
+by adding `bank` to your list of dependencies in `mix.exs`:
+
+```elixir
+def deps do
+  [
+    {:bank, "~> 0.1.0"}
+  ]
 end
+```
 
-Just to practice, lets only allow adding funds if amount is multiple of 10 (why not ¯\(ツ)/¯)
+Documentation can be generated with [ExDoc](https://github.com/elixir-lang/ex_doc)
+and published on [HexDocs](https://hexdocs.pm). Once published, the docs can
+be found at [https://hexdocs.pm/bank](https://hexdocs.pm/bank).
+
