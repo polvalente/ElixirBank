@@ -15,6 +15,7 @@ defmodule Bank.MixProject do
   # Run "mix help compile.app" to learn about applications.
   def application do
     [
+      mod: {Bank.Application, []},
       extra_applications: [
         :logger,
         :eventstore,
@@ -29,6 +30,9 @@ defmodule Bank.MixProject do
       # {:dep_from_git, git: "https://github.com/elixir-lang/my_dep.git", tag: "0.1.0"},
       {:commanded, "~> 0.15"},
       {:commanded_eventstore_adapter, "~> 0.3"},
+      {:ecto, "~> 2.1"},
+      {:postgrex, ">= 0.0.0"},
+      {:commanded_ecto_projections, "~> 0.6"},
     ]
   end
 end
