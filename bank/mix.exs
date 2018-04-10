@@ -6,7 +6,8 @@ defmodule Bank.MixProject do
       app: :bank,
       version: "0.1.0",
       elixir: "~> 1.6",
-      start_permanent: Mix.env() == :prod,
+      env: :dev,
+      start_permanent: Mix.env() == :dev,
       deps: deps()
     ]
   end
@@ -14,7 +15,10 @@ defmodule Bank.MixProject do
   # Run "mix help compile.app" to learn about applications.
   def application do
     [
-      extra_applications: [:logger]
+      extra_applications: [
+        :logger,
+        :eventstore,
+      ],
     ]
   end
 
@@ -24,6 +28,7 @@ defmodule Bank.MixProject do
       # {:dep_from_hexpm, "~> 0.3.0"},
       # {:dep_from_git, git: "https://github.com/elixir-lang/my_dep.git", tag: "0.1.0"},
       {:commanded, "~> 0.15"},
+      {:commanded_eventstore_adapter, "~> 0.3"},
     ]
   end
 end
