@@ -1,4 +1,10 @@
 defmodule Bank do
+  @type id :: String.t
+  @spec add_funds(id, integer) :: :ok | {:error, any()}
+  @spec balance(id) :: integer
+  @spec transfer(sender_id, receiver_id, amount) :: :ok {:error, any()}
+  @spec statement(id) :: [integer]
+
   alias Bank.Commands.AddFunds
   alias Bank.Schemas.Account
   def add_funds(id, amount) do

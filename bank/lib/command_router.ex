@@ -1,7 +1,18 @@
 defmodule BankRouter do
   use Commanded.Commands.Router
   alias Bank.Aggregates.Account
-  alias Bank.Commands.AddFunds
+  alias Bank.Commands.{
+    AddFunds,
+    SendTransfer,
+    ReceiveTransfer,
+  }
 
-  dispatch AddFunds, to: Account, identity: :account_id
+  dispatch (
+    [
+      AddFunds,
+      SendTransfer,
+      ReceiveTransfer
+    ],
+    to: Account, identity: :account_id
+  )
 end

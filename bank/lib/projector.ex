@@ -12,6 +12,19 @@ defmodule Bank.AccountProjector do
     end
   end
 
+  # project %TransferReceived{sender_account_id: sender_id, receiver_account_id: receiver_id, amount: amount}, _metadata do
+  #   case Bank.Repo.get(Account, account_id) do
+  #     nil -> {:error, :account_not_found}
+  #     _ -> increase_balance(multi, account_id, amount)
+  #   end
+  # end
+
+  # project %TransferSent{sender_account_id: sender_id, receiver_account_id: receiver_id, amount: amount}, _metadata do
+  #   case Bank.Repo.get(Account, account_id) do
+  #     nil -> {:error, :account_not_found}
+  #   end
+  # end
+
   defp create_account(multi, account_id, amount) do
     Ecto.Multi.insert(multi, :account_projection, %Account{account_id: account_id, balance: amount})
   end
