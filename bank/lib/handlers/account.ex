@@ -14,12 +14,12 @@ defmodule Bank.AccountBalanceHandler do
   end
 
   #TransferSent event handlers
-  def handle(%TransferSent{receiver_account_id: receiver_id, sender_account_id: sender_id, amount: amount}, _metadata) do
+  def handle(%TransferSent{receiver_id: receiver_id, sender_id: sender_id, amount: amount}, _metadata) do
     Agent.update(__MODULE__, fn balance -> balance - amount end)
   end
   
   #TransferReceived event handlers
-  def handle(%TransferReceived{receiver_account_id: receiver_id, sender_account_id: sender_id, amount: amount}, _metadata) do
+  def handle(%TransferReceived{receiver_id: receiver_id, sender_id: sender_id, amount: amount}, _metadata) do
     Agent.update(__MODULE__, fn balance -> balance + amount end)
   end
 

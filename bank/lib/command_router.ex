@@ -1,4 +1,4 @@
-defmodule BankRouter do
+defmodule Bank.Router do
   use Commanded.Commands.Router
   alias Bank.Aggregates.Account
   alias Bank.Commands.{

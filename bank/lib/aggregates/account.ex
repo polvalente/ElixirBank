@@ -18,26 +18,26 @@ defmodule Bank.Aggregates.Account do
   def execute(_, %ReceiveTransfer{} = cmd)
     when is_valid(cmd.amount)
   do
-    %TransferReceived{sender_account_id: cmd.sender_account_id, receiver_account_id: cmd.receiver_account_id, amount: amount}
+    %TransferReceived{sender_id: cmd.sender_id, receiver_id: cmd.receiver_id, amount: amount}
   end
 
-  def execute(_, %ReceiveTransfer{}) do
-    {:error, :invalid_amount}
+  def execute(_, %ReceiveTransfer{} = transfer) do
+    %TransferFailed{transfer_id: transfer.id, reason: :invalid_amount}
   end
 
   # Send Transfer
   def execute(%Account{balance: balance}, %SendTransfer{amount: amount} = cmd)
     when is_valid(amount) and has_funds(amount, balance)
   do
-    %TransferSent{sender_account_id: cmd.sender_account_id, receiver_account_id: cmd.receiver_account_id, amount: amount}
+    %TransferSent{sender_id: cmd.sender_id, receiver_id: cmd.receiver_id, amount: amount}
   end
 
-  def execute(%Account{balance: balance}, %SendTransfer{amount: amount}) do
+  def execute(%Account{balance: balance}, %SendTransfer{amount: amount} = transfer) do
     error_type = cond do
       !is_valid(amount) -> :invalid_amount
       !has_funds(amount, balance) -> :insufficient_funds
     end
-    {:error, error_type}
+    %TransferFailed{transfer_id: transfer.id, reason: error_type}
   end
   
 
