@@ -7,12 +7,7 @@ defmodule Bank.Router do
     ReceiveTransfer,
   }
 
-  dispatch (
-    [
-      AddFunds,
-      SendTransfer,
-      ReceiveTransfer
-    ],
-    to: Account, identity: :account_id
-  )
+  dispatch(AddFunds, to: Account, identity: :account_id)
+  dispatch(SendTransfer, to: Account, identity: :sender_id)
+  dispatch(ReceiveTransfer, to: Account, identity: :receiver_id)
 end

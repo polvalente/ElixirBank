@@ -33,6 +33,7 @@ defmodule Bank.MixProject do
       {:ecto, "~> 2.1"},
       {:postgrex, ">= 0.0.0"},
       {:commanded_ecto_projections, "~> 0.6"},
+      {:uuid, "~> 1.1"},
     ]
   end
 end

@@ -4,7 +4,6 @@ defmodule Bank.Handlers.TransferProcessManager do
     router: Bank.Router
 
   alias Bank.Commands.{
-    SendTransfer,
     ReceiveTransfer
   }
 
@@ -12,6 +11,8 @@ defmodule Bank.Handlers.TransferProcessManager do
     TransferSent,
     TransferReceived
   }
+
+  alias __MODULE__
 
   defstruct [
     :transfer_id,
@@ -21,35 +22,27 @@ defmodule Bank.Handlers.TransferProcessManager do
     :status
   ]
 
-  def interested?(%TransferRequested{transfer_id: transfer_id}), do: {:start, transfer_id}
-  def interested?(%TransferSent{transfer_id: transfer_id}), do: {:continue, transfer_id}
-  def interested?(%TransferReceived{transfer_id: transfer_id}), do: {:continue, transfer_id}
-  def interested?(%TransferFailed{transfer_id: transfer_id}), do: {:stop, transfer_id}
-  def interested?(%TransferFinished{transfer_id: transfer_id}), do: {:stop, transfer_id}
-  def interested?(_), do: false
-
-  def handle(%TransferProcessManager{}, %TransferRequested{transfer_id: transfer_id, sender_id: sender_id, receiver_id: receiver_id, amount: amount}) do
-    %SendTransfer{sender_id: sender_id, transfer_id: transfer_id, amount: amount, receiver_id: receiver_id}
+  def interested?(%TransferSent{transfer_id: transfer_id}) do 
+    IO.puts("++++++")
+    IO.puts("transfer sent!")
+    IO.puts("++++++")
+    {:continue, transfer_id}
   end
 
-  def handle(%TransferProcessManager{transfer_id: transfer_id, receiver_id: receiver_id, amount: amount, sender_id: sender_id}) do
-    %ReceiveTransfer{receiver_id: receiver_id, amount: amount, transfer_id: transfer_id, sender_id: sender_id}
+  def interested?(%TransferReceived{transfer_id: transfer_id}) do 
+    {:continue, transfer_id}
+  end
+  # def interested?(_), do: false
+
+  def handle(%TransferProcessManager{}, %TransferSent{transfer_id: transfer_id, sender_id: sender_id, receiver_id: receiver_id, amount: amount}) do
+    %ReceiveTransfer{sender_id: sender_id, receiver_id: receiver_id, amount: amount, transfer_id: transfer_id}
   end
 
   ## State Mutators
   
-  def apply(%TransferProcessManager{} = transfer, %TransferRequested{transfer_id: transfer_id, sender_id: sender_id, receiver_id: receiver_id, amount: amount}) do
-    %TransferProcessManager{transfer |
-      transfer_id: transfer_id,
-      sender_id: sender_id,
-      receiver_id: receiver_id,
-      amount: amount,
-      status: :withdraw_money_from_sender_account
-  end
-
   def apply(%TransferProcessManager{} = transfer, %TransferSent{}) do
     %TransferProcessManager{transfer |
-      status: deposit_money_in_receiver_account
+      status: :deposit_money_in_receiver_account
     }
   end
 end
