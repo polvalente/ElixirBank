@@ -30,9 +30,9 @@ defmodule Bank.Handlers.TransferProcessManager do
   end
 
   def interested?(%TransferReceived{transfer_id: transfer_id}) do 
-    {:continue, transfer_id}
+    {:stop, transfer_id}
   end
-  # def interested?(_), do: false
+  def interested?(_), do: false
 
   def handle(%TransferProcessManager{}, %TransferSent{transfer_id: transfer_id, sender_id: sender_id, receiver_id: receiver_id, amount: amount}) do
     %ReceiveTransfer{sender_id: sender_id, receiver_id: receiver_id, amount: amount, transfer_id: transfer_id}
