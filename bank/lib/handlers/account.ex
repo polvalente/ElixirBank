@@ -3,7 +3,8 @@ defmodule Bank.AccountBalanceHandler do
   alias Bank.Events.{
     FundsAdded,
     TransferReceived,
-    TransferSent
+    TransferSent,
+    TransferFailed
   }
 
   def init do
@@ -24,6 +25,10 @@ defmodule Bank.AccountBalanceHandler do
   
   #TransferReceived event handlers
   def handle(%TransferReceived{amount: amount}, _metadata) do
+    Agent.update(__MODULE__, fn balance -> balance + amount end)
+  end
+
+  def handle(%TransferFailed{amount: amount}, _metadata) do
     Agent.update(__MODULE__, fn balance -> balance + amount end)
   end
 

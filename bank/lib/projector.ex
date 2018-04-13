@@ -6,7 +6,8 @@ defmodule Bank.AccountProjector do
   alias Bank.Events.{
     FundsAdded,
     TransferReceived,
-    TransferSent
+    TransferSent,
+    TransferFailed
   }
 
   project %FundsAdded{account_id: account_id, amount: amount}, _metadata do
@@ -18,15 +19,22 @@ defmodule Bank.AccountProjector do
 
   project %TransferReceived{receiver_id: receiver_id, amount: amount}, _metadata do
     case Bank.Repo.get(Account, receiver_id) do
-      nil -> {:error, :account_not_found}
+      nil -> multi
       _ -> increase_balance(multi, receiver_id, amount)
     end
   end
 
   project %TransferSent{sender_id: sender_id, amount: amount}, _metadata do
     case Bank.Repo.get(Account, sender_id) do
-      nil -> {:error, :account_not_found}
+      nil -> multi
       _ -> decrease_balance(multi, sender_id, amount)
+    end
+  end
+
+  project %TransferFailed{account_id: account_id, amount: amount}, _metadata do
+    case Bank.Repo.get(Account, account_id) do
+      nil -> multi
+      _ -> increase_balance(multi, account_id, amount)
     end
   end
 

@@ -28,6 +28,12 @@ defmodule Bank do
     })
   end
 
-  def statement(_id) do
+  def statement(id) do
+    statement = EventStore.stream_forward(id)
+    |> Enum.map(fn(item) -> item.data end)
+    |> Enum.map(&Bank.Events.Helper.to_statement_line/1)
+    |> Enum.join("\n")
+
+    "Account statement for: '#{id}'\n\n" <> statement <> "\nTotal balance: #{balance(id)}"
   end
 end

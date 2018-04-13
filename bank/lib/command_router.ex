@@ -5,9 +5,11 @@ defmodule Bank.Router do
     AddFunds,
     SendTransfer,
     ReceiveTransfer,
+    FailTransfer
   }
 
   dispatch(AddFunds, to: Account, identity: :account_id)
+  dispatch(FailTransfer, to: Account, identity: :account_id)
   dispatch(SendTransfer, to: Account, identity: :sender_id)
   dispatch(ReceiveTransfer, to: Account, identity: :receiver_id)
 end
