@@ -34,6 +34,8 @@ defmodule Bank.MixProject do
       {:postgrex, ">= 0.0.0"},
       {:commanded_ecto_projections, "~> 0.6"},
       {:uuid, "~> 1.1"},
+      {:cowboy, "~> 1.0.0"},
+      {:plug, "~> 1.0"},
     ]
   end
 end

@@ -7,7 +7,6 @@ defmodule Bank.AccountProjector do
     FundsAdded,
     TransferReceived,
     TransferSent,
-    TransferFailed
   }
 
   project %FundsAdded{account_id: account_id, amount: amount}, _metadata do
@@ -28,13 +27,6 @@ defmodule Bank.AccountProjector do
     case Bank.Repo.get(Account, sender_id) do
       nil -> multi
       _ -> decrease_balance(multi, sender_id, amount)
-    end
-  end
-
-  project %TransferFailed{account_id: account_id, amount: amount}, _metadata do
-    case Bank.Repo.get(Account, account_id) do
-      nil -> multi
-      _ -> increase_balance(multi, account_id, amount)
     end
   end
 

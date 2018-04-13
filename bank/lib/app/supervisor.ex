@@ -10,7 +10,8 @@ defmodule Bank.Supervisor do
       # projections
       {Bank.AccountProjector, []},
       {Bank.Repo, []},
-      {Bank.Handlers.TransferProcessManager, []}
+      {Bank.Handlers.TransferProcessManager, []},
+      Plug.Adapters.Cowboy.child_spec(scheme: :http, plug: Bank.Web.Router, options: [port: 4000]),
     ]
 
     Supervisor.init(children, strategy: :one_for_one)
