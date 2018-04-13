@@ -4,14 +4,12 @@ defmodule Bank.Aggregates.Account do
     AddFunds,
     ReceiveTransfer,
     SendTransfer,
-    FailTransfer
   }
 
   alias Bank.Events.{
     FundsAdded,
     TransferSent,
     TransferReceived,
-    TransferFailed
   }
 
   alias __MODULE__
@@ -19,7 +17,7 @@ defmodule Bank.Aggregates.Account do
   # Add Funds
   def execute(_, %AddFunds{} = cmd) do
     cond do
-      !is_valid?(cmd.amount) -> {:error, :invalid_amount}
+      !is_valid?(cmd.amount, :strict) -> {:error, :invalid_amount}
       true -> %FundsAdded{account_id: cmd.account_id, amount: cmd.amount}
     end
   end
@@ -37,20 +35,9 @@ defmodule Bank.Aggregates.Account do
   # Send Transfer
   def execute(%Account{balance: balance}, %SendTransfer{amount: amount} = cmd) do
     cond do
-      !is_valid?(amount) -> {:error, :invalid_amount}
       !has_funds?(amount, balance) -> {:error, :insufficient_funds}
       true -> %TransferSent{sender_id: cmd.sender_id, receiver_id: cmd.receiver_id, amount: amount, transfer_id: cmd.transfer_id}
     end
-  end
-
-  # Fail Transfer
-  def execute(%Account{}, %FailTransfer{account_id: account_id, amount: amount, reason: reason, transfer_id: transfer_id}) do
-    %TransferFailed{
-      account_id: account_id, 
-      amount: amount, 
-      reason: reason,
-      transfer_id: transfer_id
-    }
   end
 
   # Apply Events
@@ -64,24 +51,20 @@ defmodule Bank.Aggregates.Account do
   def apply(%Account{} = account, %TransferSent{} = cmd) do
     %Account{account | balance: account.balance - cmd.amount}
   end
-  def apply(%Account{} = account, %TransferFailed{} = cmd) do
-    %Account{account | balance: account.balance + cmd.amount}
-  end
   def apply(state, _), do: state
 
   # Other functions
 
-  def is_valid?(amount \\ 0) when amount > 0 do
-     (rem(amount, 10) == 0)
-  end
-  defp is_valid?(_, _), do: false
+  defp is_valid?(amount) when amount > 0, do: true
+  defp is_valid?(_), do: false
+  defp is_valid?(amount, :strict) when amount > 0, do: (rem(amount, 10) == 0)
+  defp is_valid?(_,_), do: false
 
-  defp has_funds?(amount \\ 0 , balance \\ 0) when
+  defp has_funds?(amount, balance) when
     amount > 0 and balance >= 0
   do
     balance - amount >= 0
   end
-
   defp has_funds?(_, _), do: false
 
 end

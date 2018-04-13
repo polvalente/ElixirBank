@@ -5,13 +5,11 @@ defmodule Bank.Handlers.TransferProcessManager do
 
   alias Bank.Commands.{
     ReceiveTransfer,
-    FailTransfer
   }
 
   alias Bank.Events.{
     TransferSent,
     TransferReceived,
-    TransferFailed
   }
 
   alias __MODULE__
@@ -25,28 +23,16 @@ defmodule Bank.Handlers.TransferProcessManager do
   ]
 
   def interested?(%TransferSent{transfer_id: transfer_id}) do 
-    {:continue, transfer_id}
+    {:start, transfer_id}
   end
 
   def interested?(%TransferReceived{transfer_id: transfer_id}) do 
     {:stop, transfer_id}
   end
-  def interested?(%TransferFailed{transfer_id: transfer_id}) do
-    {:continue, transfer_id}
-  end
   def interested?(_), do: false
 
   def handle(%TransferProcessManager{}, %TransferSent{transfer_id: transfer_id, sender_id: sender_id, receiver_id: receiver_id, amount: amount}) do
     %ReceiveTransfer{sender_id: sender_id, receiver_id: receiver_id, amount: amount, transfer_id: transfer_id}
-  end
-
-  def handle(%TransferProcessManager{}, %TransferFailed{} = evt) do
-    %FailTransfer{
-      account_id: evt.account_id, 
-      amount: evt.amount, 
-      reason: evt.reason,
-      transfer_id: evt.transfer_id
-    }
   end
 
   ## State Mutators
@@ -55,10 +41,6 @@ defmodule Bank.Handlers.TransferProcessManager do
     %TransferProcessManager{transfer |
       status: :deposit_money_in_receiver_account
     }
-  end
-
-  def error({:error, reason}, %ReceiveTransfer{} = cmd, context) do
-    {:continue, [%FailTransfer{account_id: cmd.sender_id, amount: cmd.amount, reason: reason, transfer_id: cmd.transfer_id}], context}
   end
 
   def error({:error, _reason}, _failed_command, %{context: %{failures: failures}}) when 

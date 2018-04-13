@@ -19,7 +19,7 @@ defmodule Bank.AccountProjector do
 
   project %TransferReceived{receiver_id: receiver_id, amount: amount}, _metadata do
     case Bank.Repo.get(Account, receiver_id) do
-      nil -> multi
+      nil -> create_account(multi, receiver_id, amount)
       _ -> increase_balance(multi, receiver_id, amount)
     end
   end
