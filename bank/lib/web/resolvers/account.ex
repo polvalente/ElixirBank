@@ -10,14 +10,14 @@ defmodule Bank.Web.GraphQL.Resolvers.Account do
   def add_funds(_parent, %{amount: amount, account_id: id}, _resolution) do
     case Bank.add_funds(id, amount) do
       {:error, error} -> {:error, error}
-      _ -> get_account(nil, %{id: id}, nil) 
+      _ -> nil 
     end
   end
 
   def transfer(_parent, %{from_id: sender, to_id: receiver, amount: amount}, _resolution) do
     case Bank.transfer(sender, receiver, amount) do
       {:error, error} -> {:error, error}
-      _ -> get_account(nil, %{id: sender}, nil) 
+      _ -> nil 
     end
   end
 end
