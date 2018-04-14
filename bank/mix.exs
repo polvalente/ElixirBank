@@ -36,6 +36,8 @@ defmodule Bank.MixProject do
       {:uuid, "~> 1.1"},
       {:cowboy, "~> 1.0.0"},
       {:plug, "~> 1.0"},
+      {:absinthe, "~> 1.4.0"},
+      {:absinthe_plug, "~> 1.4.0"},
     ]
   end
 end

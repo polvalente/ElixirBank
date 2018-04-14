@@ -1,5 +1,5 @@
-defmodule Bank.GraphQL.Account do
-  use Absinthe.Schemas.Notation
+defmodule Bank.Web.GraphQL.Account do
+  use Absinthe.Schema.Notation
 
   object :account do
     field :id, :id
